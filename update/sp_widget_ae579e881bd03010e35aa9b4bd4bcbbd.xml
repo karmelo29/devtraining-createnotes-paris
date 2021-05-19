@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function($uibModal, $scope, spUtil) {
+	var c = this;
+
+	$scope.$on('record.updated', function(name, data) {
+		c.data.cancelComments = '';
+		c.data.statusComments = '';
+		c.data.resolveComments = '';
+		c.data.reopenComments = '';
+		spUtil.update($scope);
+	})
+
+	c.uiAction = function(action) {
+		c.data.action = action;
+		c.server.update().then(function() {
+			c.data.action = undefined;
+		})
+		c.modalInstance.close();
+	}
+	c.openModalResolve = function() {
+		c.modalInstance = $uibModal.open({
+			templateUrl: 'modalTemplateResolve',
+			scope: $scope
+		});
+	}
+	c.openModalCancel = function() {
+		c.modalInstance = $uibModal.open({
+			templateUrl: 'modalTemplateCancel',
+			scope: $scope
+		});
+	}
+	c.openModalStatus = function() {
+		c.modalInstance = $uibModal.open({
+			templateUrl: 'modalTemplateStatus',
+			scope: $scope
+		});
+	}
+	c.openModalReopen = function() {
+		c.modalInstance = $uibModal.open({
+			templateUrl: 'modalTemplateReopen',
+			scope: $scope
+		});
+	}
+	c.closeModal = function() {
+		c.modalInstance.close();
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>notes_actions</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Notes Actions</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+
+ // Get table & sys_id
+// data.table = input.table || $sp.getParameter("table");
+ //data.sys_id = input.sys_id || $sp.getParameter("sys_id");
+
+ // Valid GlideRecord
+// gr = new GlideRecord(data.table);
+ //if (!gr.isValid())
+   //return;
+
+ // Valid sys_id
+// if (!gr.get(data.sys_id))
+  // return;
+
+    data.showWidget = true;
+    data.showResolve = true;
+    data.showCancel = true;
+    data.showStatus = true;
+    data.showReopen = false;
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-05-18 20:48:53</sys_created_on>
+        <sys_id>ae579e881bd03010e35aa9b4bd4bcbbd</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name>Notes Actions</sys_name>
+        <sys_package display_value="CreateNotes" source="x_snc_createnotes">df5fd9a5090232007f44e1046c8ff69f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</sys_scope>
+        <sys_update_name>sp_widget_ae579e881bd03010e35aa9b4bd4bcbbd</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-05-19 00:57:05</sys_updated_on>
+        <template><![CDATA[<div class="panel b" ng-if="data.showWidget">
+  <div class="panel-heading bg-primary">Actions</div>
+  <div class="panel-body">
+    <button type="button" class="btn btn-primary btn-block" ng-click="c.openModalResolve()" ng-if="data.showResolve">Resolve</button>
+    <button type="button" class="btn btn-default btn-block" ng-click="c.openModalStatus()" ng-if="data.showStatus">Request Status</button>
+    <button type="button" class="btn btn-danger btn-block" ng-click="c.openModalCancel()" ng-if="data.showCancel">Cancel</button>
+    <button type="button" class="btn btn-default btn-block" ng-click="c.openModalReopen()" ng-if="data.showReopen">Reopen</button>
+  </div>
+</div>
+
+<script type="text/ng-template" id="modalTemplateResolve">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">Provide a reason for the resolve</h4>
+  </div>
+      <div class="panel-body wrapper-xl">
+      <form name="modalTemplateResolve" ng-submit="c.uiAction('resolve')">
+        <div class="form-group">
+          <textarea required sp-autosize="true" ng-required="true" ng-model="data.resolveComments" id="resolveComments" placeholder="Comments required" class="form-control ng-pristine ng-valid ng-scope ng-empty ng-touched" aria-invalid="false" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
+  </div>
+        <input class="btn btn-primary" type="submit" />
+  </form>
+  </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="modalTemplateCancel">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">Provide a reason for the cancel</h4>
+  </div>
+      <div class="panel-body wrapper-xl">
+      <form name="modalTemplateResolve" ng-submit="c.uiAction('cancel')">
+        <div class="form-group">
+          <textarea required sp-autosize="true" ng-required="true" ng-model="data.cancelComments" id="cancelComments" placeholder="Comments required" class="form-control ng-pristine ng-valid ng-scope ng-empty ng-touched" aria-invalid="false" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
+  </div>
+        <input class="btn btn-primary" type="submit" />
+  </form>
+  </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="modalTemplateStatus">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">Provide any additional information</h4>
+  </div>
+      <div class="panel-body wrapper-xl">
+      <form name="modalTemplateStatus" ng-submit="c.uiAction('status')">
+        <div class="form-group">
+          <textarea required sp-autosize="true" ng-required="true" ng-model="data.statusComments" id="statusComments" placeholder="Comments required" class="form-control ng-pristine ng-valid ng-scope ng-empty ng-touched" aria-invalid="false" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
+  </div>
+        <input class="btn btn-primary" type="submit" />
+  </form>
+  </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="modalTemplateReopen">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Provide a reason for reopening the Incident</h4>
+  </div>
+    <div class="panel-body wrapper-xl">
+      <form name="modalTemplateReopen" ng-submit="c.uiAction('reopen')">
+        <div class="form-group">
+          <textarea required sp-autosize="true" ng-required="true" ng-model="data.reopenComments" id="reopenComments" placeholder="Comments required" class="form-control ng-pristine ng-valid ng-scope ng-empty ng-touched" aria-invalid="false" style="overflow: hidden; word-wrap: break-word; resize: horizontal;"></textarea>
+  </div>
+        <input class="btn btn-primary" type="submit" />
+  </form>
+  </div>
+  </div>
+</script>]]></template>
+    </sp_widget>
+</record_update>
